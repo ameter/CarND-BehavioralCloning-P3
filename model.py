@@ -11,14 +11,17 @@ from keras.layers import Flatten, Dense, Lambda, Convolution2D, Cropping2D, MaxP
 
 def plot_loss(history):
     ### plot the training and validation loss for each epoch
+    # The following line prevents the script from blowing up on AWS EC2 instances.
+    plt.switch_backend('agg')
+    fig = plt.figure()
     plt.plot(history.history['loss'])
     plt.plot(history.history['val_loss'])
     plt.title('model mean squared error loss')
     plt.ylabel('mean squared error loss')
     plt.xlabel('epoch')
     plt.legend(['training set', 'validation set'], loc='upper right')
-    #plt.show()
-    plt.savefig("mse_loss.png")
+    fig.savefig("mse_loss.png")
+    plt.show()
 
 def generator(samples, batch_size=32):
     num_samples = len(samples)
@@ -92,7 +95,7 @@ history = model.fit_generator(train_generator,
                     samples_per_epoch=len(train_samples) * 6,
                     validation_data=validation_generator,
                     nb_val_samples=len(validation_samples) * 6,
-                    nb_epoch=3,
+                    nb_epoch=7,
                     verbose=2)
 
 model.save('model.h5')

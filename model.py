@@ -17,7 +17,7 @@ def plot_loss(history):
     plt.ylabel('mean squared error loss')
     plt.xlabel('epoch')
     plt.legend(['training set', 'validation set'], loc='upper right')
-    plt.show()
+    #plt.show()
     plt.savefig("mse_loss.png")
 
 def generator(samples, batch_size=32):
@@ -92,7 +92,7 @@ history = model.fit_generator(train_generator,
                     samples_per_epoch=len(train_samples) * 6,
                     validation_data=validation_generator,
                     nb_val_samples=len(validation_samples) * 6,
-                    nb_epoch=7,
+                    nb_epoch=3,
                     verbose=2)
 
 model.save('model.h5')

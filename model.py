@@ -1,4 +1,3 @@
-import os
 import csv
 import cv2
 import numpy as np
@@ -70,13 +69,13 @@ train_samples, validation_samples = train_test_split(samples, test_size=0.2)
 train_generator = generator(train_samples, batch_size=32)
 validation_generator = generator(validation_samples, batch_size=32)
 
-#ch, row, col = 3, 80, 320  # Trimmed image format
-
 model = Sequential()
-# Preprocess incoming data, centered around zero with small standard deviation
-#model.add(Lambda(lambda x: x / 127.5 - 1., input_shape=(ch, row, col)))
+
+# Preprocess incoming data, crop out top and bottom of images
 model.add(Cropping2D(cropping=((50, 20), (0, 0)), input_shape=(160, 320, 3)))
+# Preprocess data, centered around zero with small standard deviation
 model.add(Lambda(lambda x: (x / 255.0) - 0.5))
+# Model based on nvidia model (5 convolutional layers, flatten, 4 (counting output) fully connected layers)
 model.add(Convolution2D(24, 5, 5, subsample=(2, 2), activation="relu"))
 model.add(Convolution2D(36, 5, 5, subsample=(2, 2), activation="relu"))
 model.add(Convolution2D(48, 5, 5, subsample=(2, 2), activation="relu"))
@@ -87,8 +86,6 @@ model.add(Dense(100))
 model.add(Dense(50))
 model.add(Dense(10))
 model.add(Dense(1))
-
-
 
 model.compile(loss='mse', optimizer='adam')
 history = model.fit_generator(train_generator,

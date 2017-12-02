@@ -117,7 +117,7 @@ After the collection process, I had 82,450 data points. I then preprocessed this
 
 I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was between 3 and 7 as evidenced by the fact that the mean squared error (mse) loss on the validation set stopped decreasing beyond that.  The following chart shows mse loss over epochs.
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was between 4 and 7 (3 and 6 in the zero-based numbering seen below) as evidenced by the fact that the mean squared error (mse) loss on the validation set stopped decreasing beyond that.  The following chart shows mse loss over epochs.
 
 ![alt text][image6]
 

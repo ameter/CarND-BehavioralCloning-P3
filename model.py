@@ -8,13 +8,6 @@ from sklearn.utils import shuffle
 from keras.models import Sequential
 from keras.layers import Flatten, Dense, Lambda, Convolution2D, Cropping2D, MaxPooling2D
 
-samples = []
-with open('./data/driving_log.csv') as csvfile:
-    reader = csv.reader(csvfile)
-    for line in reader:
-        samples.append(line)
-
-train_samples, validation_samples = train_test_split(samples, test_size=0.2)
 
 def plot_loss(history):
     ### plot the training and validation loss for each epoch
@@ -34,18 +27,40 @@ def generator(samples, batch_size=32):
             batch_samples = samples[offset : offset + batch_size]
 
             images = []
-            angles = []
+            steering_angles = []
             for batch_sample in batch_samples:
-                name = './data/IMG/' + batch_sample[0].split('/')[-1]
-                center_image = cv2.imread(name)
-                center_angle = float(batch_sample[3])
-                images.append(center_image)
-                angles.append(center_angle)
+                steering_center = float(batch_sample[3])
+
+                # create adjusted steering measurements for the side camera images
+                correction = 0.15  # this is a parameter to tune
+                steering_left = steering_center + correction
+                steering_right = steering_center - correction
+
+                # read in images from center, left and right cameras
+                path = './data/IMG/'
+                img_center = cv2.imread(path + batch_sample[0].split('/')[-1])
+                img_left = cv2.imread(path + batch_sample[1].split('/')[-1])
+                img_right = cv2.imread(path + batch_sample[2].split('/')[-1])
+
+                # add images and angles to data set
+                images.extend([img_center, img_left, img_right])
+                images.extend([np.fliplr(img_center), np.fliplr(img_left), np.fliplr(img_right)])
+                steering_angles.extend([steering_center, steering_left, steering_right])
+                steering_angles.extend([-steering_center, -steering_left, -steering_right])
 
             # trim image to only see section with road
             X_train = np.array(images)
-            y_train = np.array(angles)
+            y_train = np.array(steering_angles)
             yield shuffle(X_train, y_train)
+
+
+samples = []
+with open('./data/driving_log.csv') as csvfile:
+    reader = csv.reader(csvfile)
+    for line in reader:
+        samples.append(line)
+
+train_samples, validation_samples = train_test_split(samples, test_size=0.2)
 
 # compile and train the model using the generator function
 train_generator = generator(train_samples, batch_size=32)
@@ -73,10 +88,10 @@ model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')
 history = model.fit_generator(train_generator,
-                    samples_per_epoch=len(train_samples),
+                    samples_per_epoch=len(train_samples) * 6,
                     validation_data=validation_generator,
-                    nb_val_samples=len(validation_samples),
-                    nb_epoch=3,
+                    nb_val_samples=len(validation_samples) * 6,
+                    nb_epoch=12,
                     verbose=2)
 
 model.save('model.h5')

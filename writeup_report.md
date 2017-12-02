@@ -14,13 +14,13 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 
-[image1]: ./examples/placeholder.png "Model Visualization"
-[image2]: ./examples/placeholder.png "Grayscaling"
-[image3]: ./examples/placeholder_small.png "Recovery Image"
-[image4]: ./examples/placeholder_small.png "Recovery Image"
-[image5]: ./examples/placeholder_small.png "Recovery Image"
-[image6]: ./examples/placeholder_small.png "Normal Image"
-[image7]: ./examples/placeholder_small.png "Flipped Image"
+[image1]: ./writeup_images/cnn-architecture.png "Model Visualization"
+[image2]: ./writeup_images/center.jpg "Normal Image"
+[image3]: ./writeup_images/recover1.jpg "Recovery Image"
+[image4]: ./writeup_images/recover2.jpg "Recovery Image"
+[image5]: ./writeup_images/recover3.jpg "Recovery Image"
+[image6]: ./writeup_images/mse_loss.png "MSE Loss"
+
 
 ## Rubric Points
 ### Here I will consider the [rubric points](https://review.udacity.com/#!/rubrics/432/view) individually and describe how I addressed each point in my implementation.  
@@ -91,9 +91,7 @@ At the end of the process, the vehicle is able to drive autonomously around the 
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 18-24) consisted of a convolution neural network with the following layers and layer sizes ...
-
-Here is a visualization of the architecture (note: visualizing the architecture is optional according to the project rubric)
+The final model architecture (model.py lines 75-88) consisted of a convolutional neural network with the following layers and layer sizes.  Note, this visualization of the architecture was provided by nvidia:
 
 ![alt text][image1]
 
@@ -103,7 +101,7 @@ To capture good driving behavior, I first recorded two laps on track one using c
 
 ![alt text][image2]
 
-I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to .... These images show what a recovery looks like starting from ... :
+I then recorded the vehicle recovering from the left side and right sides of the road back to center so that the vehicle would learn to recover when it got near the edge of the track. These images show what a recovery looks like starting from ... :
 
 ![alt text][image3]
 ![alt text][image4]
@@ -111,16 +109,16 @@ I then recorded the vehicle recovering from the left side and right sides of the
 
 Then I repeated this process on track two in order to get more data points.
 
-To augment the data sat, I also flipped images and angles thinking that this would ... For example, here is an image that has then been flipped:
+To augment the data set, I also flipped images and angles thinking that this would reduce the model's tendency to steer to the left.
+
+After the collection process, I had 82,450 data points. I then preprocessed this data by applying the following function to every pixel: (pixel / 255.0) - 0.5
+
+I finally randomly shuffled the data set and put 20% of the data into a validation set. 
+
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was between 3 and 7 as evidenced by the fact that the mean squared error (mse) loss on the validation set stopped decreasing beyond that.  The following chart shows mse loss over epochs.
 
 ![alt text][image6]
-![alt text][image7]
 
-Etc ....
-
-After the collection process, I had X number of data points. I then preprocessed this data by ...
+I used an adam optimizer so that manually training the learning rate wasn't necessary.
 
 
-I finally randomly shuffled the data set and put Y% of the data into a validation set. 
-
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was Z as evidenced by ... I used an adam optimizer so that manually training the learning rate wasn't necessary.

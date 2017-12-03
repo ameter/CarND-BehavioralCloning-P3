@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.utils import shuffle
 from keras.models import Sequential
-from keras.layers import Flatten, Dense, Lambda, Convolution2D, Cropping2D, MaxPooling2D
+from keras.layers import Flatten, Dense, Lambda, Convolution2D, Cropping2D, MaxPooling2D, Dropout
 
 
 def plot_loss(history):
@@ -77,14 +77,22 @@ model.add(Cropping2D(cropping=((50, 20), (0, 0)), input_shape=(160, 320, 3)))
 model.add(Lambda(lambda x: (x / 255.0) - 0.5))
 # Model based on nvidia model (5 convolutional layers, flatten, 4 (counting output) fully connected layers)
 model.add(Convolution2D(24, 5, 5, subsample=(2, 2), activation="relu"))
+model.add(Dropout(0.6))
 model.add(Convolution2D(36, 5, 5, subsample=(2, 2), activation="relu"))
+model.add(Dropout(0.6))
 model.add(Convolution2D(48, 5, 5, subsample=(2, 2), activation="relu"))
+model.add(Dropout(0.6))
 model.add(Convolution2D(64, 3, 3, activation="relu"))
+model.add(Dropout(0.6))
 model.add(Convolution2D(64, 3, 3, activation="relu"))
+model.add(Dropout(0.6))
 model.add(Flatten())
 model.add(Dense(100))
+model.add(Dropout(0.6))
 model.add(Dense(50))
+model.add(Dropout(0.6))
 model.add(Dense(10))
+model.add(Dropout(0.6))
 model.add(Dense(1))
 
 model.compile(loss='mse', optimizer='adam')

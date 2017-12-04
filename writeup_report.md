@@ -124,10 +124,11 @@ I finally randomly shuffled the data set and put 20% of the data into a validati
 
 I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs before adding dropout was between 4 and 7 (3 and 6 in the zero-based numbering seen below) as evidenced by the fact that the mean squared error (mse) loss on the validation set stopped decreasing beyond that.  The ideal number of epochs after adding dropout was approximately 45.  The following charts show mse loss over epochs.
 
-###### Without Dropout
+##### Without Dropout
 ![alt text][image6]
 
-###### With Dropout
+
+##### With Dropout
 ![alt text][image7]
 
 I used an adam optimizer so that manually training the learning rate wasn't necessary.

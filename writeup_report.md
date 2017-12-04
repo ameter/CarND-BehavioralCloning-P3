@@ -19,7 +19,8 @@ The goals / steps of this project are the following:
 [image3]: ./writeup_images/recover1.jpg "Recovery Image"
 [image4]: ./writeup_images/recover2.jpg "Recovery Image"
 [image5]: ./writeup_images/recover3.jpg "Recovery Image"
-[image6]: ./writeup_images/mse_loss.png "MSE Loss"
+[image6]: ./writeup_images/mse_loss1.png "MSE Loss"
+[image7]: ./writeup_images/mse_loss2.png "MSE Loss"
 
 
 ## Rubric Points
@@ -50,17 +51,17 @@ The model.py file contains the code for training and saving the convolutional ne
 
 #### 1. An appropriate model architecture has been employed
 
-My model consists of a convolutional neural network with kernel sizes between 3x3 and 5x5 and depths between 24 and 64 (model.py lines 79-83) 
+My model consists of a convolutional neural network with kernel sizes between 3x3 and 5x5 and depths between 24 and 64 (model.py lines 79-96) 
 
-The model includes RELU activations to introduce nonlinearity (code lines 79-83), and the data is normalized in the model using a Keras lambda layer (code line 77). 
+The model includes RELU activations to introduce nonlinearity (code lines 79-87), and the data is normalized in the model using a Keras lambda layer (code line 77). 
 
 #### 2. Attempts to reduce overfitting in the model
 
-The model was trained and validated on different data sets to ensure that the model was not overfitting (code lines 66-70). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
+The model was trained and validated on different data sets to determine if the model was overfitting (code lines 66-70). Dropout was added after every layer to further reduce overfitting (code lines 80-95). The model was tested by running it through the simulator and ensuring that the vehicle could stay on the track.
 
 #### 3. Model parameter tuning
 
-The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 90).
+The model used an adam optimizer, so the learning rate was not tuned manually (model.py line 98).
 
 #### 4. Appropriate training data
 
@@ -85,15 +86,19 @@ To combat the underfitting, I modified added a preprocessing step to normalize t
 
 Then I croped the tops and bottoms off the images to mostly show the road instead of the front of the car and surrounding scenery (code line 75).
 
+After addressing the underfitting issue, the model had a low mean squared error on the training set, but a relatively high mean squared error on the validation set.  This implied that the model was overfitting.  To address this, I added dropout after every layer of the model.  I experimented with a number of different dropout rate and achieved good performance with a rate of 0.25.
+
 The final step was to run the simulator to see how well the car was driving around track one. There vehicle tended to pull to the left and was unable to recover when it got off track.  To improve the driving behavior in these cases, I recorded additional center lane driving, added images from the left and right camera with a steering correction of 0.15 (code line 38), generated revcovery images by drving near the edge of the track and then recording the recovery, and generated additional data that would not favor left turns by creating flipped images and steering angles (code lines 50, 52).
 
 At the end of the process, the vehicle is able to drive autonomously around the track without leaving the road.
 
 #### 2. Final Model Architecture
 
-The final model architecture (model.py lines 75-88) consisted of a convolutional neural network with the following layers and layer sizes.  Note, this visualization of the architecture was provided by nvidia:
+The final model architecture (model.py lines 75-96) consisted of a convolutional neural network with the following layers and layer sizes.  Note, this visualization of the architecture was provided by nvidia:
 
 ![alt text][image1]
+
+I added a dropout rate of .25 after every layer.  
 
 #### 3. Creation of the Training Set & Training Process
 
@@ -117,9 +122,13 @@ After the collection process, I had 82,450 data points. I then preprocessed this
 
 I finally randomly shuffled the data set and put 20% of the data into a validation set. 
 
-I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs was between 4 and 7 (3 and 6 in the zero-based numbering seen below) as evidenced by the fact that the mean squared error (mse) loss on the validation set stopped decreasing beyond that.  The following chart shows mse loss over epochs.
+I used this training data for training the model. The validation set helped determine if the model was over or under fitting. The ideal number of epochs before adding dropout was between 4 and 7 (3 and 6 in the zero-based numbering seen below) as evidenced by the fact that the mean squared error (mse) loss on the validation set stopped decreasing beyond that.  The ideal number of epochs after adding dropout was approximately 45.  The following charts show mse loss over epochs.
 
+###### Without Dropout
 ![alt text][image6]
+
+###### With Dropout
+![alt text][image7]
 
 I used an adam optimizer so that manually training the learning rate wasn't necessary.
 
